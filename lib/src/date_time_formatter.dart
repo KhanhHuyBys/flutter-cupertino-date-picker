@@ -16,6 +16,9 @@ class DateTimeFormatter {
         return DATETIME_PICKER_TIME_FORMAT;
       case DateTimePickerMode.datetime:
         return DATETIME_PICKER_DATETIME_FORMAT;
+      case DateTimePickerMode.month:
+        // TODO: Handle this case.
+        break;
     }
     return '';
   }
@@ -32,14 +35,14 @@ class DateTimeFormatter {
 
   /// Split date format to array.
   static List<String> splitDateFormat(String dateFormat,
-      {DateTimePickerMode mode}) {
+      {DateTimePickerMode? mode}) {
     if (dateFormat == null || dateFormat.length == 0) {
       return [];
     }
     List<String> result = dateFormat.split(RegExp(DATE_FORMAT_SEPARATOR));
     if (mode == DateTimePickerMode.datetime) {
       // datetime mode need join day format
-      List<String> temp = List<String>();
+      List<String> temp = [];
       StringBuffer dayFormat = StringBuffer();
       for (int i = 0; i < result.length; i++) {
         String format = result[i];
@@ -156,14 +159,14 @@ class DateTimeFormatter {
   /// format month text
   static String _formatMonth(
       int value, String format, DateTimePickerLocale locale) {
-    List<String> months = DatePickerI18n.getLocaleMonths(locale);
+    List<String>? months = DatePickerI18n.getLocaleMonths(locale);
     if (format.contains('MMMM')) {
       // MMMM: the full name of month, e.g. January
-      return format.replaceAll('MMMM', months[value - 1]);
+      return format.replaceAll('MMMM', months![value - 1]);
     } else if (format.contains('MMM')) {
       // MMM: the short name of month, e.g. Jan
       months = DatePickerI18n.getLocaleMonths(locale, false);
-      String month = months[value - 1];
+      String month = months![value - 1];
       return format.replaceAll('MMM', month);
     }
     return _formatNumber(value, format, 'M');
@@ -180,12 +183,12 @@ class DateTimeFormatter {
       int value, String format, DateTimePickerLocale locale) {
     if (format.contains('EEEE')) {
       // EEEE: the full name of week, e.g. Monday
-      List<String> weeks = DatePickerI18n.getLocaleWeeks(locale);
-      return format.replaceAll('EEEE', weeks[value - 1]);
+      List<String>? weeks = DatePickerI18n.getLocaleWeeks(locale);
+      return format.replaceAll('EEEE', weeks![value - 1]);
     }
     // EEE: the short name of week, e.g. Mon
-    List<String> weeks = DatePickerI18n.getLocaleWeeks(locale, false);
-    return format.replaceAll(RegExp(r'E+'), weeks[value - 1]);
+    List<String>? weeks = DatePickerI18n.getLocaleWeeks(locale, false);
+    return format.replaceAll(RegExp(r'E+'), weeks![value - 1]);
   }
 
   /// format hour text
